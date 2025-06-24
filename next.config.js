@@ -7,28 +7,32 @@ const nextConfig = {
     );
 
     config.module.rules.push(
-      // Reapply the existing rule, but only for svg imports ending in ?url
       {
         ...fileLoaderRule,
         test: /\.svg$/i,
-        resourceQuery: /url/, // *.svg?url
+        resourceQuery: /url/,
       },
-      // Convert all other *.svg imports to React components
       {
         test: /\.svg$/i,
         issuer: fileLoaderRule.issuer,
-        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
+        resourceQuery: { not: [/url/] },
         use: ["@svgr/webpack"],
       }
     );
 
-    // Modify the file loader rule to ignore *.svg, since we have it handled now.
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
   },
 
-  // ...other config
+  // GitHub Pages specific settings
+  output: "export", // enables next export
+  distDir: "out", // folder for static export
+  images: {
+    unoptimized: true, // disables Next.js image optimization
+  },
+  basePath: "/saaslandingPage", // replace with your repo name
+  assetPrefix: "/saaslandingPage/", // replace with your repo name
 };
 
 export default nextConfig;
